@@ -1,15 +1,34 @@
-import React, { useState } from 'react'
-import WeatherForm from './WeatherForm'
-import WeatherInfo from './WeatherInfo'
+import React, { useState, useEffect } from 'react';
+import WeatherForm from './WeatherForm';
+import WeatherInfo from './WeatherInfo';
 
-const WheaterApp = (onChange) => {
-    const [city, setCity] = useState(null)
-    const handleChange = (e) => {
-        setCity(e.taret.value)
-    }
+const WheaterApp = ({onChangeCity}) => {
+  const [weather, setWeather] = useState(null);
+  useEffect(()=> {
+    loadingInfo()
+  }, []);
+
+  useEffect(()=> {
+    document.title = `Weather | ${weather?.location.name ?? ''}`
+  }, [weather]);
+
+  async function loadingInfo(city = 'London') {
+    try {
+      const request = await fetch(`${process.env.REACT_APP_URL}key=${process.env.REACT_APP_KEY}&q=${city}&aqi=no`);
+      const json = await request.json();
+      console.log(json)
+      setWeather(json)
+    } catch (error) {}
+  }
+  const handleCity = (city) => {
+    setWeather(null)
+    loadingInfo(city);
+  }
+
   return (
     <div>
-      <WeatherForm citySelection={handleCity}/>
+      <WeatherForm onChangeCity={handleCity}/>
+      <div>city: {weather?.current.temp_c}</div>
       <WeatherInfo />
     </div>
     

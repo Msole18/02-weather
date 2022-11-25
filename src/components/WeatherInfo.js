@@ -2,7 +2,9 @@ import React from 'react'
 
 const WeatherInfo = () => {
   return (
-    <div>city</div>
+    <div>
+      
+    </div>
   );
 }
 
