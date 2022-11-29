@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import WeatherForm from './WeatherForm';
 import WeatherInfo from './WeatherInfo';
+import LoadingCircule from '../UI/LoagingCircule'
+
+import styles from './WeatherApp.module.css';
 
 const WheaterApp = ({onChangeCity}) => {
   const [weather, setWeather] = useState(null);
-  useEffect(()=> {
+
+  useEffect(()=> { // this effect load a default info when the app start
     loadingInfo()
   }, []);
 
-  useEffect(()=> {
+  useEffect(()=> {  // this effect changes the document title when the user changes the city
     document.title = `Weather | ${weather?.location.name ?? ''}`
   }, [weather]);
 
-  async function loadingInfo(city = 'London') {
+  async function loadingInfo(city = 'Buenos Aires') {
     try {
       const request = await fetch(`${process.env.REACT_APP_URL}key=${process.env.REACT_APP_KEY}&q=${city}&aqi=no`);
       const json = await request.json();
@@ -26,10 +30,10 @@ const WheaterApp = ({onChangeCity}) => {
   }
 
   return (
-    <div>
+    <div className={styles.weatherContainer}>
       <WeatherForm onChangeCity={handleCity}/>
-      <div>city: {weather?.current.temp_c}</div>
-      <WeatherInfo />
+      {weather ? <WeatherInfo weather={weather}/> : <LoadingCircule />}
+      
     </div>
     
   )
